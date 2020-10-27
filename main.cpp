@@ -53,10 +53,17 @@ struct Wrapper
     {
         std::cout << "Wrapper::print(" << val << ")" << std::endl;
     }
+    
 private:
     Type val;
 };
 
+template<>
+void Wrapper<Point>::print()
+{
+    std::cout << "Wrapper::print(" << val.toString() << ")" << std::endl;
+}
+/*
 template<>
 struct Wrapper<Point>
 {
@@ -72,7 +79,7 @@ struct Wrapper<Point>
 private:
     Point val;
 };
-
+*/
 template<typename T, typename ...Args>
 void variadicHelper(T first, Args ... everythingElse)
 {
