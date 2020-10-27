@@ -10,7 +10,9 @@ Purpose:  This project will teach you about variadic templates and recursive tem
 1) read Instructions.cpp
 
 Make the following program work, which makes use of Variadic templates and Recursion
- */
+
+*/
+
 
 #include <iostream>
 #include <string>
@@ -28,7 +30,7 @@ struct Point
     std::string toString() const
     {
         std::string str;
-        str +="Point { x: ";
+        str += "Point { x: ";
         str += std::to_string(x);
         str += ", y: ";
         str += std::to_string(y);
@@ -46,7 +48,53 @@ struct Wrapper
     { 
         std::cout << "Wrapper(" << typeid(val).name() << ")" << std::endl; 
     }
+
+    void print()
+    {
+        std::cout << "Wrapper::print(" << val << ")" << std::endl;
+    }
+    
+private:
+    Type val;
 };
+
+template<>
+void Wrapper<Point>::print()
+{
+    std::cout << "Wrapper::print(" << val.toString() << ")" << std::endl;
+}
+/*
+template<>
+struct Wrapper<Point>
+{
+    Wrapper(Point&& t) : val(std::move(t)) 
+    { 
+        std::cout << "Wrapper(" << typeid(val).name() << ")" << std::endl; 
+    }
+
+    void print()
+    {
+        std::cout << "Wrapper::print(" << val.toString() << ")" << std::endl;
+    }
+private:
+    Point val;
+};
+*/
+template<typename T, typename ...Args>
+void variadicHelper(T first, Args ... everythingElse)
+{
+    Wrapper wrapper( std::forward<T>(first) );
+    wrapper.print();
+    variadicHelper( std::forward<Args>(everythingElse)... ); 
+}
+
+template<typename T>
+void variadicHelper(T first)
+{
+    Wrapper wrapper( std::forward<T>(first) );
+    wrapper.print();
+}
+
 
 /*
  MAKE SURE YOU ARE NOT ON THE MASTER BRANCH
@@ -64,7 +112,7 @@ struct Wrapper
 
 int main()
 {
-    variadicHelper( 3, std::string("burgers"), 2.5, Point{3.f, 0.14f} );
+    variadicHelper( 3, std::string("burgers"), 2.5, Point{3.0f, 0.14f} );
 }
 
 
